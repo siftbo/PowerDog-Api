@@ -1,6 +1,7 @@
 #!flask/bin/python
 from flask import Flask
 from flask import render_template
+from flask_cors import CORS
 from flask import request
 import calendar
 import time
@@ -21,6 +22,8 @@ environment = os.getenv("NODE_ENV")
 dog = api.PowerDog(EMAIL,HASH)
 
 app = Flask(__name__)
+
+CORS(app)
 
 def StartUTConeDay():
     end = calendar.timegm(time.gmtime())
@@ -57,14 +60,17 @@ def Api(key,method):
             year = request.args.get('year',default = 2020, type = int)
             return dog.getPhotovoltaicBorders(PowerDogId,month,year)
         elif (method == "getSensorData"):
-            SensorsId = request.args.get('SensorId',default = 0000, type = int)
-            # TODO
+            SensorId = request.args.get('SensorId',default = 0000, type = int)
+            start = request.args.get('start',default = StartUTConeDay(), type = int)
+            end = request.args.get('end',default = EndUTConeDay(), type = int)
+            return dog.getSensorData(SensorId,start,end)
         elif (method == "getCounterData"):
             CounterId = request.args.get('CounterId',default = 0000, type = int)
             start = request.args.get('start',default = StartUTConeDay(), type = int)
             end = request.args.get('end',default = EndUTConeDay(), type = int)
             return dog.getCounterData(CounterId,start,end)
     return render_template('notAllowed.html',pwd=key)
+    
 if __name__ == '__main__':
     if(environment == "production"):
         app.run(debug=False,port=PORT)    

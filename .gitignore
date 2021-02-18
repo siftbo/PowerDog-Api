@@ -21,3 +21,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+app/__pycache__/api.cpython-39.pyc
+app/__pycache__/app.cpython-39.pyc
+app/__pycache__/settings.cpython-39.pyc
+.gitignore
